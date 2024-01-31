@@ -6,13 +6,13 @@
 /*   By: ngaulthi <ngaulthi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/19 17:34:07 by ngaulthi          #+#    #+#             */
-/*   Updated: 2023/12/21 18:15:58 by ngaulthi         ###   ########.fr       */
+/*   Updated: 2024/01/31 20:16:50 by ngaulthi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	strlenght(const char *src)
+int	strlenght(char *src)
 {
 	int	i;
 
@@ -42,45 +42,53 @@ int	check_n(char *src)
 char    *get_next_line(int fd)
 {
 	static char	buffer[BUFFER_SIZE + 1] = "\0";
-	size_t n = 0;
+	size_t	n;
 	char	*line;
 
 	line = ft_strdup("");
+	if (!line)
+		return (NULL);
 	n = check_n(buffer);
 	if (buffer[0] == '\0') 
 	{
 		line = readline(line, buffer, n, fd);
+		if(!line)
+			return (NULL);
 		if (BUFFER_SIZE == 1)
 			ft_memmove(buffer, buffer + strlenght(buffer), 1);
 		else if (buffer[0] != '\0')
-			ft_memmove(buffer, buffer + strlenght(buffer), BUFFER_SIZE - strlenght(buffer));
+			ft_memmove(buffer, buffer + strlenght(buffer), BUFFER_SIZE - strlenght(buffer) + 1);
 	}
 	else
 	{
-		line = ft_strdup(buffer);
+		line = ft_strjoin(line, ft_strdup(buffer));
+		if(!line)
+				return (NULL);
 		n = check_n(buffer);
-		ft_memmove(buffer, buffer + strlenght(buffer), BUFFER_SIZE - strlenght(buffer));
+		ft_memmove(buffer, buffer + strlenght(buffer), BUFFER_SIZE - strlenght(buffer) + 1);
 		if (n == 0)
 		{	
 			line = readline(line, buffer, n, fd);
+			if(!line)
+				return (NULL);
 			if (BUFFER_SIZE == 1)
 				ft_memmove(buffer, buffer + strlenght(buffer), 1);
 			else if (buffer[0] != '\0' )
-				ft_memmove(buffer, buffer + strlenght(buffer), BUFFER_SIZE - strlenght(buffer));
+				ft_memmove(buffer, buffer + strlenght(buffer), BUFFER_SIZE - strlenght(buffer) + 1);
 		}
 	}
 	return (line);
 }
-int main()
-{
-	int fd = open("test.txt", O_RDONLY);
-	char *line;
-	int i = 1;
+// int main()
+// {
+// 	int fd = open("1char.txt", O_RDONLY);
+// 	char *line;
+// 	int i = 1;
 
-	while((line = get_next_line(fd)))
-	{
-		printf("line %d => %s",i,line);
-		free(line);
-		i++;
-	}
-}
+// 	while((line = get_next_line(fd)))
+// 	{
+// 		printf("line %d => %s",i,line);
+// 		free(line);
+// 		i++;
+// 	}
+// }

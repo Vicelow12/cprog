@@ -6,13 +6,13 @@
 /*   By: ngaulthi <ngaulthi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 13:18:46 by ngaulthi          #+#    #+#             */
-/*   Updated: 2024/01/29 13:18:46 by ngaulthi         ###   ########.fr       */
+/*   Updated: 2024/01/31 20:16:51 by ngaulthi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*join;
 	int		i;
@@ -20,9 +20,19 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	i = 0;
 	j = 0;
+	if ((!s1) || (!s2))
+	{
+		free(s1);
+		free(s2);
+		return (NULL);
+	}
 	join = malloc(sizeof(char) * (strlenght(s1) + strlenght(s2) + 1));
 	if (!join)
+	{
+		free(s1);
+		free(s2);
 		return (NULL);
+	}
 	while (i < (int)strlenght(s1))
 	{
 		join[i] = s1[i];
@@ -35,9 +45,11 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		j++;
 	}
 	join[i] = '\0';
+	free(s1);
+	free(s2);
 	return (join);
 }
-char	*ft_strdup(const char *s)
+char	*ft_strdup(char *s)
 {
 	char	*new;
 	int		i;
@@ -59,7 +71,7 @@ char	*ft_strdup(const char *s)
 	new[i] = '\0';
 	return (new);
 }
-void	*ft_memcpy(void *dest, const void *src, size_t n)
+void	*ft_memcpy(void *dest, void *src, size_t n)
 {
 	size_t	i;
 	char	*cpy_dest;
@@ -77,7 +89,7 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	}
 	return (dest);
 }
-void	*ft_memmove(void *dest, const void *src, size_t n)
+void	*ft_memmove(void *dest, void *src, size_t n)
 {
 	size_t	i;
 	char	*cpy_dest;
@@ -129,6 +141,8 @@ char	*readline(char *line, char *buffer, size_t n, int fd)
 		buffer[bytesread] = '\0';
 		n = check_n(buffer);
 		line = ft_strjoin(line, ft_strdup(buffer));
+		if (!line)
+			return (NULL);
 	}
     return (line);
 }
