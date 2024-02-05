@@ -6,7 +6,7 @@
 /*   By: ngaulthi <ngaulthi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 13:18:46 by ngaulthi          #+#    #+#             */
-/*   Updated: 2024/01/31 20:16:51 by ngaulthi         ###   ########.fr       */
+/*   Updated: 2024/02/05 16:11:26 by ngaulthi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*join;
-	int		i;
-	int		j;
+	size_t		i;
+	size_t		j;
 
 	i = 0;
 	j = 0;
@@ -26,19 +26,19 @@ char	*ft_strjoin(char *s1, char *s2)
 		free(s2);
 		return (NULL);
 	}
-	join = malloc(sizeof(char) * (strlenght(s1) + strlenght(s2) + 1));
+	join = malloc(sizeof(char) * (strl(s1) + strl(s2) + 1));
 	if (!join)
 	{
 		free(s1);
 		free(s2);
 		return (NULL);
 	}
-	while (i < (int)strlenght(s1))
+	while (i < (int)strl(s1))
 	{
 		join[i] = s1[i];
 		i++;
 	}
-	while (i < (int)strlenght(s1) + (int)strlenght(s2))
+	while (i < (int)strl(s1) + (int)strl(s2))
 	{
 		join[i] = s2[j];
 		i++;
@@ -49,13 +49,14 @@ char	*ft_strjoin(char *s1, char *s2)
 	free(s2);
 	return (join);
 }
+
 char	*ft_strdup(char *s)
 {
 	char	*new;
 	int		i;
 
 	i = 0;
-	new = malloc(sizeof(char) * (strlenght (s) + 1));
+	new = malloc(sizeof(char) * (strl (s) + 1));
 	if (!new)
 		return (NULL);
 	while (s[i] && s[i] != '\n')
@@ -71,6 +72,7 @@ char	*ft_strdup(char *s)
 	new[i] = '\0';
 	return (new);
 }
+
 void	*ft_memcpy(void *dest, void *src, size_t n)
 {
 	size_t	i;
@@ -89,6 +91,7 @@ void	*ft_memcpy(void *dest, void *src, size_t n)
 	}
 	return (dest);
 }
+
 void	*ft_memmove(void *dest, void *src, size_t n)
 {
 	size_t	i;
@@ -113,36 +116,29 @@ void	*ft_memmove(void *dest, void *src, size_t n)
 	ft_memcpy(dest, src, n);
 	return (dest);
 }
-char	*readline(char *line, char *buffer, size_t n, int fd)
+
+char	*readline(char *line, char *buf, size_t n, int fd)
 {
-	ssize_t bytesread;
+	ssize_t	bytesread;
 
 	while (n == 0)
 	{
-		bytesread = read(fd, buffer, BUFFER_SIZE);
+		bytesread = read(fd, buf, BUFFER_SIZE);
 		if (bytesread <= 0)
 		{
-			if (bytesread == 0)
-			{
-				if (line[0] == '\0')
-				{
-					free(line);
-					return (NULL);
-				}
-				else
-					break;
-			}
+			if (bytesread == 0 && line[0] != '\0')
+				break ;
 			else
 			{
 				free(line);
 				return (NULL);
 			}
 		}
-		buffer[bytesread] = '\0';
-		n = check_n(buffer);
-		line = ft_strjoin(line, ft_strdup(buffer));
+		buf[bytesread] = '\0';
+		n = check_n(buf);
+		line = ft_strjoin(line, ft_strdup(buf));
 		if (!line)
 			return (NULL);
 	}
-    return (line);
+	return (line);
 }
